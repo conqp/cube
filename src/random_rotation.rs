@@ -33,12 +33,9 @@ impl Iterator for RandomRotation {
     type Item = Vec3d;
 
     fn next(&mut self) -> Option<Self::Item> {
-        self.position.0 += self.random();
-        self.position.0 %= TAU;
-        self.position.1 += self.random();
-        self.position.1 %= TAU;
-        self.position.2 += self.random();
-        self.position.2 %= TAU;
+        let rand = Vec3d::new(self.random(), self.random(), self.random());
+        self.position += rand;
+        self.position %= TAU;
         Some(self.position)
     }
 }

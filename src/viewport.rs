@@ -94,17 +94,17 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 
     fn alpha(&self, i: f64, j: f64, k: f64) -> f64 {
-        (i * self.orientation.1.cos()).mul_add(
-            self.orientation.2.cos(),
-            (k * self.orientation.0.sin()).mul_add(
-                self.orientation.2.sin(),
-                (j * self.orientation.0.cos()).mul_add(
-                    self.orientation.2.sin(),
-                    (j * self.orientation.0.sin() * self.orientation.1.sin()).mul_add(
-                        self.orientation.2.cos(),
-                        -k * self.orientation.0.cos()
-                            * self.orientation.1.sin()
-                            * self.orientation.2.cos(),
+        (i * self.orientation.y().cos()).mul_add(
+            self.orientation.z().cos(),
+            (k * self.orientation.x().sin()).mul_add(
+                self.orientation.z().sin(),
+                (j * self.orientation.x().cos()).mul_add(
+                    self.orientation.z().sin(),
+                    (j * self.orientation.x().sin() * self.orientation.y().sin()).mul_add(
+                        self.orientation.z().cos(),
+                        -k * self.orientation.x().cos()
+                            * self.orientation.y().sin()
+                            * self.orientation.z().cos(),
                     ),
                 ),
             ),
@@ -112,15 +112,15 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 
     fn beta(&self, i: f64, j: f64, k: f64) -> f64 {
-        (i * self.orientation.1.cos()).mul_add(
-            -self.orientation.2.sin(),
-            (k * self.orientation.0.cos() * self.orientation.1.sin()).mul_add(
-                self.orientation.2.sin(),
-                (j * self.orientation.0.sin() * self.orientation.1.sin()).mul_add(
-                    -self.orientation.2.sin(),
-                    (j * self.orientation.0.cos()).mul_add(
-                        self.orientation.2.cos(),
-                        k * self.orientation.0.sin() * self.orientation.2.cos(),
+        (i * self.orientation.y().cos()).mul_add(
+            -self.orientation.z().sin(),
+            (k * self.orientation.x().cos() * self.orientation.y().sin()).mul_add(
+                self.orientation.z().sin(),
+                (j * self.orientation.x().sin() * self.orientation.y().sin()).mul_add(
+                    -self.orientation.z().sin(),
+                    (j * self.orientation.x().cos()).mul_add(
+                        self.orientation.z().cos(),
+                        k * self.orientation.x().sin() * self.orientation.z().cos(),
                     ),
                 ),
             ),
@@ -129,10 +129,10 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
 
     fn gamma(&self, i: f64, j: f64, k: f64) -> f64 {
         i.mul_add(
-            self.orientation.1.sin(),
-            (k * self.orientation.0.cos()).mul_add(
-                self.orientation.1.cos(),
-                -j * self.orientation.0.sin() * self.orientation.1.cos(),
+            self.orientation.y().sin(),
+            (k * self.orientation.x().cos()).mul_add(
+                self.orientation.y().cos(),
+                -j * self.orientation.x().sin() * self.orientation.y().cos(),
             ),
         )
     }
