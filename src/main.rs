@@ -10,6 +10,8 @@ struct Args {
     height: u32,
     #[arg(long, default_value_t = 100)]
     distance: u8,
+    #[arg(long, default_value_t = 0.6)]
+    sample_rate: f64,
 }
 
 fn main() {
@@ -25,7 +27,7 @@ fn main() {
             Vec3d::default(),
             '.',
             args.distance,
-            0.5,
+            args.sample_rate,
         ),
     );
     animation.run();
