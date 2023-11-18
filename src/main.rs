@@ -1,5 +1,5 @@
 use clap::Parser;
-use cube::{Animation, Cube, RandomRotation, Vec3d, Viewport};
+use cube::{Animation, Cube, RandomRotation, Viewport};
 use std::time::Duration;
 
 const K1: u8 = 40;
@@ -28,7 +28,6 @@ fn main() {
             &cube,
             args.width,
             args.height,
-            Vec3d::default(),
             '.',
             args.distance,
             args.sample_rate,

@@ -1,4 +1,5 @@
 use crate::{Cube, FloatRange, Vec3d};
+use std::f64::consts::TAU;
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
@@ -6,10 +7,10 @@ pub struct Viewport<'a, const K1: u8> {
     cube: &'a Cube,
     width: u32,
     height: u32,
-    orientation: Vec3d,
     background: char,
     distance: u8,
     sample_rate: f64,
+    orientation: Vec3d,
     z: Vec<f64>,
     buffer: Vec<char>,
 }
@@ -20,7 +21,6 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         cube: &'a Cube,
         width: u32,
         height: u32,
-        orientation: Vec3d,
         background: char,
         distance: u8,
         sample_rate: f64,
@@ -29,21 +29,21 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             cube,
             width,
             height,
-            orientation,
             background,
             distance,
             sample_rate,
+            orientation: Vec3d::default(),
             z: vec![0.0; width as usize * height as usize],
             buffer: vec![background; width as usize * height as usize],
         }
     }
 
-    pub fn rotate(&mut self, orientation: Vec3d) {
-        self.orientation = orientation;
-        self.draw();
+    pub fn rotate(&mut self, rotation: Vec3d) {
+        self.orientation += rotation;
+        self.orientation %= TAU;
     }
 
-    fn draw(&mut self) {
+    pub fn draw(&mut self) {
         self.reset_buffers();
 
         for x in FloatRange::new(

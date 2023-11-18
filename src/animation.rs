@@ -28,6 +28,7 @@ where
     pub fn run(&mut self) {
         for rotation in &mut self.animator {
             self.viewport.rotate(rotation);
+            self.viewport.draw();
             println!("{}", self.viewport);
             sleep(self.speed);
         }
