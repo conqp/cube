@@ -2,6 +2,7 @@ use crate::{Vec3d, Viewport};
 use std::thread::sleep;
 use std::time::Duration;
 
+#[derive(Debug)]
 pub struct Animation<'a, T, const K1: u8>
 where
     T: Iterator<Item = Vec3d>,
