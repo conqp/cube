@@ -28,7 +28,7 @@ fn main() {
             &cube,
             args.width,
             args.height,
-            '.',
+            ".",
             args.distance,
             args.sample_rate,
         ),
