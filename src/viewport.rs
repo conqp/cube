@@ -78,14 +78,17 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
 
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     fn draw_surface(&mut self, x: f64, y: f64, z: f64, chr: char) {
-        let ooz = 1.0 / self.gamma(x, y, z) + f64::from(self.distance);
-        let xp = (f64::from(K1) * ooz * self.alpha(x, y, z))
-            .mul_add(2.0, f64::from(self.width) / 2.0)
+        let dx = self.alpha(x, y, z);
+        let dy = self.beta(x, y, z);
+        let dz = self.gamma(x, y, z) + f64::from(self.distance);
+        let ooz = 1.0 / dz;
+        let xp = (f64::from(K1) * ooz * dx)
+            .mul_add(2.0, self.width as f64 / 2.0)
             .round();
         let yp = (f64::from(K1) * ooz)
-            .mul_add(self.beta(x, y, z), f64::from(self.height) / 2.0)
+            .mul_add(dy, self.height as f64 / 2.0)
             .round();
-        let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
+        let idx = yp.mul_add(self.width as f64, xp).round() as usize;
 
         if (idx < self.width as usize * self.height as usize) && (ooz > self.z[idx]) {
             self.z[idx] = ooz;
