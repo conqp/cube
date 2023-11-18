@@ -77,7 +77,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-    fn draw_surface(&mut self, x: f64, y: f64, z: f64, chr: &'static str) {
+    fn draw_surface(&mut self, x: f64, y: f64, z: f64, repr: &'static str) {
         let ooz = 1.0 / (self.gamma(x, y, z) + f64::from(self.distance));
         let xp = (f64::from(K1) * ooz * self.alpha(x, y, z))
             .mul_add(2.0, f64::from(self.width) / 2.0)
@@ -89,7 +89,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
 
         if (idx < self.width as usize * self.height as usize) && (ooz > self.z[idx]) {
             self.z[idx] = ooz;
-            self.buffer[idx] = chr;
+            self.buffer[idx] = repr;
         }
     }
 
@@ -140,14 +140,15 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
 
 impl<'a, const K1: u8> Display for Viewport<'a, K1> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        for (index, chr) in self.buffer.iter().enumerate() {
+        let mut s = String::new();
+
+        for (index, repr) in self.buffer.iter().enumerate() {
+            s.push_str(repr);
             if (index + 1) % self.width as usize == 0 {
-                writeln!(f, "{chr}")?;
-            } else {
-                write!(f, "{chr}")?;
+                s.push('\n');
             }
         }
 
-        Ok(())
+        write!(f, "{s}")
     }
 }
