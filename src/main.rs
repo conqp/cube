@@ -12,6 +12,8 @@ struct Args {
     distance: u8,
     #[arg(long, default_value_t = 0.6)]
     sample_rate: f64,
+    #[arg(long, default_value_t = 8)]
+    speed: u64,
 }
 
 fn main() {
@@ -19,7 +21,7 @@ fn main() {
     let cube = Cube::default();
     let mut animation = Animation::new(
         RandomRotation::default(),
-        Duration::from_millis(8),
+        Duration::from_millis(args.speed),
         Viewport::<40>::new(
             &cube,
             args.width,
