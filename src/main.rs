@@ -25,6 +25,7 @@ fn main() {
             Vec3d::default(),
             '.',
             args.distance,
+            0.5,
         ),
     );
     animation.run();

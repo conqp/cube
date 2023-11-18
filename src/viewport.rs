@@ -1,4 +1,4 @@
-use crate::{Cube, Vec3d};
+use crate::{Cube, FloatRange, Vec3d};
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
@@ -9,6 +9,7 @@ pub struct Viewport<'a, const K1: u8> {
     orientation: Vec3d,
     background: char,
     distance: u8,
+    sample_rate: f64,
     z: Vec<f64>,
     buffer: Vec<char>,
 }
@@ -22,6 +23,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         orientation: Vec3d,
         background: char,
         distance: u8,
+        sample_rate: f64,
     ) -> Self {
         Self {
             cube,
@@ -30,6 +32,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             orientation,
             background,
             distance,
+            sample_rate,
             z: vec![0.0; width as usize * height as usize],
             buffer: vec![background; width as usize * height as usize],
         }
@@ -43,44 +46,22 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     fn draw(&mut self) {
         self.reset_buffers();
 
-        for x in (-i32::from(self.cube.size()))..(self.cube.size().into()) {
-            for y in (-i32::from(self.cube.size()))..(self.cube.size().into()) {
-                self.draw_surface(
-                    x.into(),
-                    y.into(),
-                    -f64::from(self.cube.size()),
-                    self.cube.side(0),
-                );
-                self.draw_surface(
-                    f64::from(self.cube.size()),
-                    y.into(),
-                    x.into(),
-                    self.cube.side(1),
-                );
-                self.draw_surface(
-                    -f64::from(self.cube.size()),
-                    y.into(),
-                    -f64::from(x),
-                    self.cube.side(2),
-                );
-                self.draw_surface(
-                    -f64::from(x),
-                    y.into(),
-                    self.cube.size().into(),
-                    self.cube.side(3),
-                );
-                self.draw_surface(
-                    x.into(),
-                    -f64::from(self.cube.size()),
-                    -f64::from(y),
-                    self.cube.side(4),
-                );
-                self.draw_surface(
-                    x.into(),
-                    self.cube.size().into(),
-                    y.into(),
-                    self.cube.side(5),
-                );
+        for x in FloatRange::new(
+            -f64::from(self.cube.size()),
+            self.cube.size().into(),
+            self.sample_rate,
+        ) {
+            for y in FloatRange::new(
+                -f64::from(self.cube.size()),
+                self.cube.size().into(),
+                self.sample_rate,
+            ) {
+                self.draw_surface(x, y, -f64::from(self.cube.size()), self.cube.side(0));
+                self.draw_surface(f64::from(self.cube.size()), y, x, self.cube.side(1));
+                self.draw_surface(-f64::from(self.cube.size()), y, -x, self.cube.side(2));
+                self.draw_surface(-x, y, self.cube.size().into(), self.cube.side(3));
+                self.draw_surface(x, -f64::from(self.cube.size()), -y, self.cube.side(4));
+                self.draw_surface(x, self.cube.size().into(), y, self.cube.side(5));
             }
         }
     }
