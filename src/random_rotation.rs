@@ -3,29 +3,36 @@ use rand::rngs::ThreadRng;
 use rand::{thread_rng, Rng};
 use std::f64::consts::TAU;
 
+const DEFAULT_OFFSET: f64 = 0.1;
+const DEFAULT_SCALING: f64 = 0.1;
+
 #[derive(Debug)]
 pub struct RandomRotation {
     position: Vec3d,
     rng: ThreadRng,
+    offset: f64,
+    scaling: f64,
 }
 
 impl RandomRotation {
     #[must_use]
-    pub fn new(position: Vec3d) -> Self {
+    pub fn new(position: Vec3d, offset: f64, scaling: f64) -> Self {
         Self {
             position,
             rng: thread_rng(),
+            offset,
+            scaling,
         }
     }
 
     fn random(&mut self) -> f64 {
-        (self.rng.gen::<f64>() - 0.1) / 10.0
+        (self.rng.gen::<f64>() - self.offset) * self.scaling
     }
 }
 
 impl Default for RandomRotation {
     fn default() -> Self {
-        Self::new(Vec3d::default())
+        Self::new(Vec3d::default(), DEFAULT_OFFSET, DEFAULT_SCALING)
     }
 }
 

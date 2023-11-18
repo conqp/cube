@@ -2,6 +2,8 @@ use clap::Parser;
 use cube::{Animation, Cube, RandomRotation, Vec3d, Viewport};
 use std::time::Duration;
 
+const K1: u8 = 40;
+
 #[derive(Debug, Parser)]
 struct Args {
     #[arg(short, long, default_value_t = 160)]
@@ -22,7 +24,7 @@ fn main() {
     let mut animation = Animation::new(
         RandomRotation::default(),
         Duration::from_millis(args.speed),
-        Viewport::<40>::new(
+        Viewport::<K1>::new(
             &cube,
             args.width,
             args.height,
