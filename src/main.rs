@@ -6,15 +6,15 @@ const K1: u8 = 40;
 
 #[derive(Debug, Parser)]
 struct Args {
-    #[arg(short, long, default_value_t = 160)]
+    #[arg(short, long, help = "viewport width", default_value_t = 160)]
     width: u8,
-    #[arg(long, default_value_t = 44)]
+    #[arg(long, help = "viewport height", default_value_t = 44)]
     height: u8,
-    #[arg(long, default_value_t = 100)]
+    #[arg(long, help = "distance from camera", default_value_t = 100)]
     distance: u8,
-    #[arg(long, default_value_t = 0.6)]
+    #[arg(long, help = "surface sampling rate", default_value_t = 0.6)]
     sample_rate: f64,
-    #[arg(long, default_value_t = 8)]
+    #[arg(long, help = "rotation interval in milliseconds", default_value_t = 8)]
     speed: u64,
 }
 
