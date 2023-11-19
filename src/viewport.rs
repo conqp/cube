@@ -4,7 +4,6 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
 pub struct Viewport<'a, const K1: u8> {
-    cube: &'a Cube<'a>,
     width: u8,
     height: u8,
     background: &'a str,
@@ -16,16 +15,8 @@ pub struct Viewport<'a, const K1: u8> {
 
 impl<'a, const K1: u8> Viewport<'a, K1> {
     #[must_use]
-    pub fn new(
-        cube: &'a Cube<'a>,
-        width: u8,
-        height: u8,
-        background: &'a str,
-        distance: u8,
-        sample_rate: f64,
-    ) -> Self {
+    pub fn new(width: u8, height: u8, background: &'a str, distance: u8, sample_rate: f64) -> Self {
         Self {
-            cube,
             width,
             height,
             background,
@@ -41,25 +32,25 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         self.orientation %= TAU;
     }
 
-    pub fn draw(&mut self) {
+    pub fn draw(&mut self, cube: &Cube<'a>) {
         self.reset_buffers();
 
         for x in FloatRange::new(
-            -f64::from(self.cube.size()),
-            self.cube.size().into(),
+            -f64::from(cube.size()),
+            cube.size().into(),
             self.sample_rate,
         ) {
             for y in FloatRange::new(
-                -f64::from(self.cube.size()),
-                self.cube.size().into(),
+                -f64::from(cube.size()),
+                cube.size().into(),
                 self.sample_rate,
             ) {
-                self.draw_surface(x, y, -f64::from(self.cube.size()), self.cube.side(0));
-                self.draw_surface(f64::from(self.cube.size()), y, x, self.cube.side(1));
-                self.draw_surface(-f64::from(self.cube.size()), y, -x, self.cube.side(2));
-                self.draw_surface(-x, y, self.cube.size().into(), self.cube.side(3));
-                self.draw_surface(x, -f64::from(self.cube.size()), -y, self.cube.side(4));
-                self.draw_surface(x, self.cube.size().into(), y, self.cube.side(5));
+                self.draw_surface(x, y, -f64::from(cube.size()), cube.side(0));
+                self.draw_surface(f64::from(cube.size()), y, x, cube.side(1));
+                self.draw_surface(-f64::from(cube.size()), y, -x, cube.side(2));
+                self.draw_surface(-x, y, cube.size().into(), cube.side(3));
+                self.draw_surface(x, -f64::from(cube.size()), -y, cube.side(4));
+                self.draw_surface(x, cube.size().into(), y, cube.side(5));
             }
         }
     }

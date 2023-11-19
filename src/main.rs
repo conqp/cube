@@ -24,10 +24,10 @@ fn main() {
     let args = Args::parse();
     let cube = Cube::with_size(args.size);
     let mut animation = Animation::new(
+        &cube,
         RandomRotation::default(),
         Duration::from_millis(args.frequency),
         Viewport::<K1>::new(
-            &cube,
             args.width,
             args.height,
             ".",
