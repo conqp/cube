@@ -11,8 +11,7 @@ pub struct Viewport<'a, const K1: u8> {
     distance: u8,
     sample_rate: f64,
     orientation: Vec3d,
-    z: Vec<f64>,
-    buffer: Vec<&'a str>,
+    buffer: Vec<(f64, &'a str)>,
 }
 
 impl<'a, const K1: u8> Viewport<'a, K1> {
@@ -33,8 +32,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             distance,
             sample_rate,
             orientation: Vec3d::default(),
-            z: vec![0.0; width as usize * height as usize],
-            buffer: vec![background; width as usize * height as usize],
+            buffer: vec![(0.0, background); width as usize * height as usize],
         }
     }
 
@@ -67,12 +65,8 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 
     fn reset_buffers(&mut self) {
-        for item in &mut self.z {
-            *item = 0.0;
-        }
-
         for item in &mut self.buffer {
-            *item = self.background;
+            *item = (0.0, self.background);
         }
     }
 
@@ -87,9 +81,8 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             .round();
         let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
 
-        if (idx < self.width as usize * self.height as usize) && (ooz > self.z[idx]) {
-            self.z[idx] = ooz;
-            self.buffer[idx] = repr;
+        if (idx < self.width as usize * self.height as usize) && (ooz > self.buffer[idx].0) {
+            self.buffer[idx] = (ooz, repr);
         }
     }
 
@@ -142,7 +135,7 @@ impl<const K1: u8> Display for Viewport<'_, K1> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut s = String::with_capacity((self.width as usize + 1) * self.height as usize);
 
-        for (index, repr) in self.buffer.iter().enumerate() {
+        for (index, (_, repr)) in self.buffer.iter().enumerate() {
             s.push_str(repr);
 
             if (index + 1) % self.width as usize == 0 {
