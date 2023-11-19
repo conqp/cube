@@ -7,18 +7,18 @@ const DEFAULT_SCALING: f64 = 0.1;
 
 #[derive(Debug)]
 pub struct RandomRotation {
-    rng: ThreadRng,
     offset: f64,
     scaling: f64,
+    rng: ThreadRng,
 }
 
 impl RandomRotation {
     #[must_use]
-    pub fn new(offset: f64, scaling: f64) -> Self {
+    pub const fn new(offset: f64, scaling: f64, rng: ThreadRng) -> Self {
         Self {
-            rng: thread_rng(),
             offset,
             scaling,
+            rng,
         }
     }
 
@@ -29,7 +29,7 @@ impl RandomRotation {
 
 impl Default for RandomRotation {
     fn default() -> Self {
-        Self::new(DEFAULT_OFFSET, DEFAULT_SCALING)
+        Self::new(DEFAULT_OFFSET, DEFAULT_SCALING, thread_rng())
     }
 }
 
