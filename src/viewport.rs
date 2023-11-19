@@ -138,7 +138,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 }
 
-impl<'a, const K1: u8> Display for Viewport<'a, K1> {
+impl<const K1: u8> Display for Viewport<'_, K1> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut s = String::with_capacity((self.width as usize + 1) * self.height as usize);
 
