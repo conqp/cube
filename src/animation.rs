@@ -8,7 +8,7 @@ where
     T: Iterator<Item = Vec3d>,
 {
     animator: T,
-    speed: Duration,
+    frequency: Duration,
     viewport: Viewport<'a, K1>,
 }
 
@@ -17,10 +17,10 @@ where
     T: Iterator<Item = Vec3d>,
 {
     #[must_use]
-    pub const fn new(animator: T, speed: Duration, viewport: Viewport<'a, K1>) -> Self {
+    pub const fn new(animator: T, frequency: Duration, viewport: Viewport<'a, K1>) -> Self {
         Self {
             animator,
-            speed,
+            frequency,
             viewport,
         }
     }
@@ -30,7 +30,7 @@ where
             self.viewport.rotate(rotation);
             self.viewport.draw();
             println!("{}", self.viewport);
-            sleep(self.speed);
+            sleep(self.frequency);
         }
     }
 }

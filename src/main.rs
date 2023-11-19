@@ -16,8 +16,8 @@ struct Args {
     distance: u8,
     #[arg(long, help = "surface sampling rate", default_value_t = 0.6)]
     sample_rate: f64,
-    #[arg(long, help = "rotation interval in milliseconds", default_value_t = 8)]
-    speed: u64,
+    #[arg(long, help = "rotation frequency in milliseconds", default_value_t = 8)]
+    frequency: u64,
 }
 
 fn main() {
@@ -25,7 +25,7 @@ fn main() {
     let cube = Cube::with_size(args.size);
     let mut animation = Animation::new(
         RandomRotation::default(),
-        Duration::from_millis(args.speed),
+        Duration::from_millis(args.frequency),
         Viewport::<K1>::new(
             &cube,
             args.width,
