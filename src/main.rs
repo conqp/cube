@@ -6,17 +6,27 @@ const K1: u8 = 40;
 
 #[derive(Debug, Parser)]
 struct Args {
-    #[arg(short, long, help = "cube edge size", default_value_t = DEFAULT_SIZE)]
+    #[arg(long, short, help = "cube edge size", default_value_t = DEFAULT_SIZE)]
     size: u8,
-    #[arg(short, long, help = "viewport width", default_value_t = 160)]
+    #[arg(long, short, help = "viewport width", default_value_t = 160)]
     width: u8,
-    #[arg(long, help = "viewport height", default_value_t = 44)]
+    #[arg(long, short = 'H', help = "viewport height", default_value_t = 44)]
     height: u8,
-    #[arg(long, help = "distance from camera", default_value_t = 100)]
+    #[arg(long, short, help = "distance from camera", default_value_t = 100)]
     distance: u8,
-    #[arg(long, help = "surface sampling rate", default_value_t = 0.6)]
+    #[arg(
+        long,
+        short = 'a',
+        help = "surface sampling rate",
+        default_value_t = 0.6
+    )]
     sample_rate: f64,
-    #[arg(long, help = "rotation frequency in milliseconds", default_value_t = 8)]
+    #[arg(
+        long,
+        short,
+        help = "rotation frequency in milliseconds",
+        default_value_t = 8
+    )]
     frequency: u64,
 }
 
