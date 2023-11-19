@@ -9,14 +9,14 @@ const DEFAULT_SIDES: [&str; 6] = [
 ];
 
 #[derive(Clone, Debug, PartialEq, Eq)]
-pub struct Cube {
+pub struct Cube<'a> {
     size: u8,
-    sides: [&'static str; 6],
+    sides: [&'a str; 6],
 }
 
-impl Cube {
+impl<'a> Cube<'a> {
     #[must_use]
-    pub const fn new(size: u8, sides: [&'static str; 6]) -> Self {
+    pub const fn new(size: u8, sides: [&'a str; 6]) -> Self {
         Self { size, sides }
     }
 
@@ -26,12 +26,12 @@ impl Cube {
     }
 
     #[must_use]
-    pub const fn side(&self, index: usize) -> &'static str {
+    pub const fn side(&self, index: usize) -> &'a str {
         self.sides[index]
     }
 }
 
-impl Default for Cube {
+impl Default for Cube<'_> {
     fn default() -> Self {
         Self::new(DEFAULT_SIZE, DEFAULT_SIDES)
     }

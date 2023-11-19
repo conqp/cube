@@ -4,24 +4,24 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
 pub struct Viewport<'a, const K1: u8> {
-    cube: &'a Cube,
+    cube: &'a Cube<'a>,
     width: u32,
     height: u32,
-    background: &'static str,
+    background: &'a str,
     distance: u8,
     sample_rate: f64,
     orientation: Vec3d,
     z: Vec<f64>,
-    buffer: Vec<&'static str>,
+    buffer: Vec<&'a str>,
 }
 
 impl<'a, const K1: u8> Viewport<'a, K1> {
     #[must_use]
     pub fn new(
-        cube: &'a Cube,
+        cube: &'a Cube<'a>,
         width: u32,
         height: u32,
-        background: &'static str,
+        background: &'a str,
         distance: u8,
         sample_rate: f64,
     ) -> Self {
@@ -77,7 +77,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-    fn draw_surface(&mut self, x: f64, y: f64, z: f64, repr: &'static str) {
+    fn draw_surface(&mut self, x: f64, y: f64, z: f64, repr: &'a str) {
         let ooz = 1.0 / (self.gamma(x, y, z) + f64::from(self.distance));
         let xp = (f64::from(K1) * ooz * self.alpha(x, y, z))
             .mul_add(2.0, f64::from(self.width) / 2.0)
