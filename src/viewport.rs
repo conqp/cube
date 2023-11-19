@@ -33,7 +33,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 
     pub fn draw(&mut self, cube: &Cube<'a>) {
-        self.reset_buffers();
+        self.reset_buffer();
 
         for x in FloatRange::new(
             -f64::from(cube.size()),
@@ -55,7 +55,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         }
     }
 
-    fn reset_buffers(&mut self) {
+    fn reset_buffer(&mut self) {
         for item in &mut self.buffer {
             *item = (0.0, self.background);
         }
