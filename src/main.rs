@@ -7,9 +7,9 @@ const K1: u8 = 40;
 #[derive(Debug, Parser)]
 struct Args {
     #[arg(short, long, default_value_t = 160)]
-    width: u32,
+    width: u8,
     #[arg(long, default_value_t = 44)]
-    height: u32,
+    height: u8,
     #[arg(long, default_value_t = 100)]
     distance: u8,
     #[arg(long, default_value_t = 0.6)]

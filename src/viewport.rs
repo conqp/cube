@@ -5,8 +5,8 @@ use std::fmt::{Display, Formatter};
 #[derive(Debug)]
 pub struct Viewport<'a, const K1: u8> {
     cube: &'a Cube<'a>,
-    width: u32,
-    height: u32,
+    width: u8,
+    height: u8,
     background: &'a str,
     distance: u8,
     sample_rate: f64,
@@ -18,8 +18,8 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     #[must_use]
     pub fn new(
         cube: &'a Cube<'a>,
-        width: u32,
-        height: u32,
+        width: u8,
+        height: u8,
         background: &'a str,
         distance: u8,
         sample_rate: f64,
@@ -32,7 +32,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             distance,
             sample_rate,
             orientation: Vec3d::default(),
-            buffer: vec![(0.0, background); width as usize * height as usize],
+            buffer: vec![(0.0, background); usize::from(width) * usize::from(height)],
         }
     }
 
@@ -81,7 +81,8 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             .round();
         let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
 
-        if (idx < self.width as usize * self.height as usize) && (ooz > self.buffer[idx].0) {
+        if (idx < usize::from(self.width) * usize::from(self.height)) && (ooz > self.buffer[idx].0)
+        {
             self.buffer[idx] = (ooz, repr);
         }
     }
@@ -129,11 +130,16 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
             ),
         )
     }
+
+    fn string_size(&self) -> usize {
+        // Compensate for newline character at the end of each line
+        (usize::from(self.width) + 1) * usize::from(self.height)
+    }
 }
 
 impl<const K1: u8> Display for Viewport<'_, K1> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let mut s = String::with_capacity((self.width as usize + 1) * self.height as usize);
+        let mut s = String::with_capacity(self.string_size());
 
         for (index, (_, repr)) in self.buffer.iter().enumerate() {
             s.push_str(repr);
