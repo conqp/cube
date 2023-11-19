@@ -10,21 +10,6 @@ impl Vec3d {
     }
 
     #[must_use]
-    pub const fn x(&self) -> f64 {
-        self.0
-    }
-
-    #[must_use]
-    pub const fn y(&self) -> f64 {
-        self.1
-    }
-
-    #[must_use]
-    pub const fn z(&self) -> f64 {
-        self.2
-    }
-
-    #[must_use]
     pub fn x_angle(&self, i: f64, j: f64, k: f64) -> f64 {
         (i * self.1.cos()).mul_add(
             self.2.cos(),
