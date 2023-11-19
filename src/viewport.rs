@@ -34,7 +34,16 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
 
     pub fn draw(&mut self, cube: &Cube<'a>) {
         self.reset_buffer();
+        self.draw_surfaces(cube);
+    }
 
+    fn reset_buffer(&mut self) {
+        for item in &mut self.buffer {
+            *item = (0.0, self.background);
+        }
+    }
+
+    pub fn draw_surfaces(&mut self, cube: &Cube<'a>) {
         for x in FloatRange::new(
             -f64::from(cube.size()),
             cube.size().into(),
@@ -52,12 +61,6 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
                 self.draw_surface(x, -f64::from(cube.size()), -y, cube.side(4));
                 self.draw_surface(x, cube.size().into(), y, cube.side(5));
             }
-        }
-    }
-
-    fn reset_buffer(&mut self) {
-        for item in &mut self.buffer {
-            *item = (0.0, self.background);
         }
     }
 
