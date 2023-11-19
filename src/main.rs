@@ -1,11 +1,13 @@
 use clap::Parser;
-use cube::{Animation, Cube, RandomRotation, Viewport};
+use cube::{Animation, Cube, RandomRotation, Viewport, DEFAULT_SIZE};
 use std::time::Duration;
 
 const K1: u8 = 40;
 
 #[derive(Debug, Parser)]
 struct Args {
+    #[arg(short, long, help = "cube edge size", default_value_t = DEFAULT_SIZE)]
+    size: u8,
     #[arg(short, long, help = "viewport width", default_value_t = 160)]
     width: u8,
     #[arg(long, help = "viewport height", default_value_t = 44)]
@@ -20,7 +22,7 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    let cube = Cube::default();
+    let cube = Cube::with_size(args.size);
     let mut animation = Animation::new(
         RandomRotation::default(),
         Duration::from_millis(args.speed),

@@ -1,4 +1,4 @@
-const DEFAULT_SIZE: u8 = 20;
+pub const DEFAULT_SIZE: u8 = 20;
 const DEFAULT_SIDES: [&str; 6] = [
     "\x1b[31m@\x1b[0m",
     "\x1b[32m$\x1b[0m",
@@ -18,6 +18,11 @@ impl<'a> Cube<'a> {
     #[must_use]
     pub const fn new(size: u8, sides: [&'a str; 6]) -> Self {
         Self { size, sides }
+    }
+
+    #[must_use]
+    pub const fn with_size(size: u8) -> Self {
+        Self::new(size, DEFAULT_SIDES)
     }
 
     #[must_use]
