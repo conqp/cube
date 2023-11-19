@@ -23,6 +23,45 @@ impl Vec3d {
     pub const fn z(&self) -> f64 {
         self.2
     }
+
+    #[must_use]
+    pub fn x_angle(&self, i: f64, j: f64, k: f64) -> f64 {
+        (i * self.1.cos()).mul_add(
+            self.2.cos(),
+            (k * self.0.sin()).mul_add(
+                self.2.sin(),
+                (j * self.0.cos()).mul_add(
+                    self.2.sin(),
+                    (j * self.0.sin() * self.1.sin()).mul_add(
+                        self.2.cos(),
+                        -k * self.0.cos() * self.1.sin() * self.2.cos(),
+                    ),
+                ),
+            ),
+        )
+    }
+
+    #[must_use]
+    pub fn y_angle(&self, i: f64, j: f64, k: f64) -> f64 {
+        (i * self.1.cos()).mul_add(
+            -self.2.sin(),
+            (k * self.0.cos() * self.1.sin()).mul_add(
+                self.2.sin(),
+                (j * self.0.sin() * self.1.sin()).mul_add(
+                    -self.2.sin(),
+                    (j * self.0.cos()).mul_add(self.2.cos(), k * self.0.sin() * self.2.cos()),
+                ),
+            ),
+        )
+    }
+
+    #[must_use]
+    pub fn z_angle(&self, i: f64, j: f64, k: f64) -> f64 {
+        i.mul_add(
+            self.1.sin(),
+            (k * self.0.cos()).mul_add(self.1.cos(), -j * self.0.sin() * self.1.cos()),
+        )
+    }
 }
 
 impl Add for Vec3d {
