@@ -63,12 +63,12 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
 
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
     fn draw_surface(&mut self, x: f64, y: f64, z: f64, repr: &'a str) {
-        let ooz = 1.0 / (self.gamma(x, y, z) + f64::from(self.distance));
-        let xp = (f64::from(K1) * ooz * self.alpha(x, y, z))
+        let ooz = 1.0 / (self.z(x, y, z) + f64::from(self.distance));
+        let xp = (f64::from(K1) * ooz * self.x(x, y, z))
             .mul_add(2.0, f64::from(self.width) / 2.0)
             .round();
         let yp = (f64::from(K1) * ooz)
-            .mul_add(self.beta(x, y, z), f64::from(self.height) / 2.0)
+            .mul_add(self.y(x, y, z), f64::from(self.height) / 2.0)
             .round();
         let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
 
@@ -78,7 +78,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         }
     }
 
-    fn alpha(&self, i: f64, j: f64, k: f64) -> f64 {
+    fn x(&self, i: f64, j: f64, k: f64) -> f64 {
         (i * self.orientation.y().cos()).mul_add(
             self.orientation.z().cos(),
             (k * self.orientation.x().sin()).mul_add(
@@ -96,7 +96,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         )
     }
 
-    fn beta(&self, i: f64, j: f64, k: f64) -> f64 {
+    fn y(&self, i: f64, j: f64, k: f64) -> f64 {
         (i * self.orientation.y().cos()).mul_add(
             -self.orientation.z().sin(),
             (k * self.orientation.x().cos() * self.orientation.y().sin()).mul_add(
@@ -112,7 +112,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
         )
     }
 
-    fn gamma(&self, i: f64, j: f64, k: f64) -> f64 {
+    fn z(&self, i: f64, j: f64, k: f64) -> f64 {
         i.mul_add(
             self.orientation.y().sin(),
             (k * self.orientation.x().cos()).mul_add(
