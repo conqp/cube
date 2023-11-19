@@ -20,12 +20,12 @@ impl Iterator for FloatRange {
     type Item = f64;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.value >= self.end {
-            None
-        } else {
+        if self.value < self.end {
             let value = self.value;
             self.value += self.step;
             Some(value)
+        } else {
+            None
         }
     }
 }
