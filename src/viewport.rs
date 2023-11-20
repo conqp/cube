@@ -54,27 +54,25 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
                 cube.size().into(),
                 self.sample_rate,
             ) {
-                self.draw_surface(x, y, -f64::from(cube.size()), cube.side(0));
-                self.draw_surface(f64::from(cube.size()), y, x, cube.side(1));
-                self.draw_surface(-f64::from(cube.size()), y, -x, cube.side(2));
-                self.draw_surface(-x, y, cube.size().into(), cube.side(3));
-                self.draw_surface(x, -f64::from(cube.size()), -y, cube.side(4));
-                self.draw_surface(x, cube.size().into(), y, cube.side(5));
+                self.draw_surface(Vec3d::new(x, y, -f64::from(cube.size())), cube.side(0));
+                self.draw_surface(Vec3d::new(f64::from(cube.size()), y, x), cube.side(1));
+                self.draw_surface(Vec3d::new(-f64::from(cube.size()), y, -x), cube.side(2));
+                self.draw_surface(Vec3d::new(-x, y, cube.size().into()), cube.side(3));
+                self.draw_surface(Vec3d::new(x, -f64::from(cube.size()), -y), cube.side(4));
+                self.draw_surface(Vec3d::new(x, cube.size().into(), y), cube.side(5));
             }
         }
     }
 
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
-    fn draw_surface(&mut self, x: f64, y: f64, z: f64, repr: &'a str) {
-        let ooz = 1.0 / (self.orientation.z_angle(x, y, z) + f64::from(self.distance));
-        let xp = (f64::from(K1) * ooz * self.orientation.x_angle(x, y, z))
+    fn draw_surface(&mut self, other: Vec3d, repr: &'a str) {
+        let (x, y, z) = self.orientation.angle(other).into();
+        let ooz = 1.0 / (z + f64::from(self.distance));
+        let xp = (f64::from(K1) * ooz * x)
             .mul_add(2.0, f64::from(self.width) / 2.0)
             .round();
         let yp = (f64::from(K1) * ooz)
-            .mul_add(
-                self.orientation.y_angle(x, y, z),
-                f64::from(self.height) / 2.0,
-            )
+            .mul_add(y, f64::from(self.height) / 2.0)
             .round();
         let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
 
