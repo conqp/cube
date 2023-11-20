@@ -2,7 +2,7 @@ use clap::Parser;
 use cube::{Animation, Cube, RandomRotation, Viewport, DEFAULT_SIZE};
 use std::time::Duration;
 
-const K1: u8 = 40;
+const SCALING: u8 = 40;
 
 #[derive(Debug, Parser)]
 struct Args {
@@ -37,7 +37,7 @@ fn main() {
         &cube,
         RandomRotation::default(),
         Duration::from_millis(args.frequency),
-        Viewport::<K1>::new(
+        Viewport::<SCALING>::new(
             args.width,
             args.height,
             ".",

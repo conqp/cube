@@ -3,7 +3,7 @@ use std::f64::consts::TAU;
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
-pub struct Viewport<'a, const K1: u8> {
+pub struct Viewport<'a, const SCALING: u8> {
     width: u8,
     height: u8,
     background: &'a str,
@@ -13,7 +13,7 @@ pub struct Viewport<'a, const K1: u8> {
     buffer: Vec<(f64, &'a str)>,
 }
 
-impl<'a, const K1: u8> Viewport<'a, K1> {
+impl<'a, const SCALING: u8> Viewport<'a, SCALING> {
     #[must_use]
     pub fn new(width: u8, height: u8, background: &'a str, distance: u8, sample_rate: f64) -> Self {
         Self {
@@ -68,10 +68,10 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     fn draw_surface(&mut self, other: Vec3d, repr: &'a str) {
         let (x, y, z) = self.orientation.angle(other).into();
         let ooz = 1.0 / (z + f64::from(self.distance));
-        let xp = (f64::from(K1) * ooz * x)
+        let xp = (f64::from(SCALING) * ooz * x)
             .mul_add(2.0, f64::from(self.width) / 2.0)
             .round();
-        let yp = (f64::from(K1) * ooz)
+        let yp = (f64::from(SCALING) * ooz)
             .mul_add(y, f64::from(self.height) / 2.0)
             .round();
         let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
@@ -88,7 +88,7 @@ impl<'a, const K1: u8> Viewport<'a, K1> {
     }
 }
 
-impl<const K1: u8> Display for Viewport<'_, K1> {
+impl<const SCALING: u8> Display for Viewport<'_, SCALING> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut s = String::with_capacity(self.string_size());
 
