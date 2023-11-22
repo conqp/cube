@@ -32,9 +32,8 @@ struct Args {
 
 fn main() {
     let args = Args::parse();
-    let cube = Cube::with_size(args.size);
-    let mut animation = Animation::new(
-        &cube,
+    Animation::new(
+        &Cube::with_size(args.size),
         RandomRotation::default(),
         Duration::from_millis(args.frequency),
         Viewport::<SCALING>::new(
@@ -44,6 +43,6 @@ fn main() {
             args.distance,
             args.sample_rate,
         ),
-    );
-    animation.run();
+    )
+    .run();
 }
