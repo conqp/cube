@@ -43,7 +43,7 @@ impl<'a, const SCALING: u8> Viewport<'a, SCALING> {
         }
     }
 
-    pub fn draw_surfaces(&mut self, cube: &Cube<'a>) {
+    fn draw_surfaces(&mut self, cube: &Cube<'a>) {
         for x in FloatRange::new(
             -f64::from(cube.size()),
             cube.size().into(),
