@@ -1,5 +1,5 @@
 use crate::{Cube, Vec3d, Viewport};
-use std::io::{stdout, BufWriter, Write};
+use std::io::{stdout, Write};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -34,7 +34,7 @@ where
     }
 
     pub fn run(&mut self) {
-        let mut writer = BufWriter::new(stdout().lock());
+        let mut writer = stdout().lock();
 
         for rotation in &mut self.animator {
             self.viewport.rotate(rotation);
