@@ -1,4 +1,5 @@
 use crate::{Cube, Vec3d, Viewport};
+use std::io::{stdout, BufWriter, Write};
 use std::thread::sleep;
 use std::time::Duration;
 
@@ -33,10 +34,14 @@ where
     }
 
     pub fn run(&mut self) {
+        let mut writer = BufWriter::new(stdout().lock());
+
         for rotation in &mut self.animator {
             self.viewport.rotate(rotation);
             self.viewport.draw(self.cube);
-            println!("{}", self.viewport);
+            writer
+                .write_all(self.viewport.to_string().as_bytes())
+                .expect("could not write bytes to STDOUT");
             sleep(self.frequency);
         }
     }
