@@ -47,9 +47,9 @@ impl<'a> Viewport<'a> {
     }
 
     fn reset_buffer(&mut self) {
-        for item in &mut self.buffer {
-            *item = (0.0, self.background);
-        }
+        self.buffer
+            .iter_mut()
+            .for_each(|item| *item = (0.0, self.background));
     }
 
     fn draw_surfaces(&mut self, cube: &Cube<'a>) {
