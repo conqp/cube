@@ -4,17 +4,17 @@ use std::thread::sleep;
 use std::time::Duration;
 
 #[derive(Debug)]
-pub struct Animation<'a, T, const SCALING: u8>
+pub struct Animation<'a, T>
 where
     T: Iterator<Item = Vec3d>,
 {
     cube: &'a Cube<'a>,
     animator: T,
     frequency: Duration,
-    viewport: Viewport<'a, SCALING>,
+    viewport: Viewport<'a>,
 }
 
-impl<'a, T, const SCALING: u8> Animation<'a, T, SCALING>
+impl<'a, T> Animation<'a, T>
 where
     T: Iterator<Item = Vec3d>,
 {
@@ -23,7 +23,7 @@ where
         cube: &'a Cube,
         animator: T,
         frequency: Duration,
-        viewport: Viewport<'a, SCALING>,
+        viewport: Viewport<'a>,
     ) -> Self {
         Self {
             cube,
@@ -33,16 +33,20 @@ where
         }
     }
 
-    pub fn run(&mut self) {
+    /// Run the animation.
+    ///
+    /// # Errors
+    /// Return an [`std::io::Error`] if the output cannot be written.
+    pub fn run(&mut self) -> std::io::Result<()> {
         let mut writer = stdout().lock();
 
         for rotation in &mut self.animator {
             self.viewport.rotate(rotation);
             self.viewport.draw(self.cube);
-            writer
-                .write_all(self.viewport.to_string().as_bytes())
-                .expect("could not write bytes to STDOUT");
+            writer.write_all(self.viewport.to_string().as_bytes())?;
             sleep(self.frequency);
         }
+
+        Ok(())
     }
 }

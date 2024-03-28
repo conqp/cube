@@ -2,8 +2,6 @@ use clap::Parser;
 use cube::{Animation, Cube, RandomRotation, Viewport, DEFAULT_SIZE};
 use std::time::Duration;
 
-const SCALING: u8 = 40;
-
 #[derive(Debug, Parser)]
 struct Args {
     #[arg(long, short, help = "cube edge size", default_value_t = DEFAULT_SIZE)]
@@ -28,21 +26,31 @@ struct Args {
         default_value_t = 8
     )]
     frequency: u64,
+    #[arg(long, short, help = "background character", default_value = " ")]
+    background: char,
+    #[arg(
+        long,
+        short = 'c',
+        help = "scaling of the viewport",
+        default_value_t = 40.0
+    )]
+    scaling: f64,
 }
 
-fn main() {
+fn main() -> std::io::Result<()> {
     let args = Args::parse();
     Animation::new(
         &Cube::with_size(args.size),
         RandomRotation::default(),
         Duration::from_millis(args.frequency),
-        Viewport::<SCALING>::new(
+        Viewport::new(
             args.width,
             args.height,
-            ".",
+            args.background.to_string().as_str(),
             args.distance,
             args.sample_rate,
+            args.scaling,
         ),
     )
-    .run();
+    .run()
 }

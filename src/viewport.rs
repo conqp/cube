@@ -3,25 +3,34 @@ use std::f64::consts::TAU;
 use std::fmt::{Display, Formatter};
 
 #[derive(Debug)]
-pub struct Viewport<'a, const SCALING: u8> {
+pub struct Viewport<'a> {
     width: u8,
     height: u8,
     background: &'a str,
     distance: u8,
     sample_rate: f64,
+    scaling: f64,
     orientation: Vec3d,
     buffer: Vec<(f64, &'a str)>,
 }
 
-impl<'a, const SCALING: u8> Viewport<'a, SCALING> {
+impl<'a> Viewport<'a> {
     #[must_use]
-    pub fn new(width: u8, height: u8, background: &'a str, distance: u8, sample_rate: f64) -> Self {
+    pub fn new(
+        width: u8,
+        height: u8,
+        background: &'a str,
+        distance: u8,
+        sample_rate: f64,
+        scaling: f64,
+    ) -> Self {
         Self {
             width,
             height,
             background,
             distance,
             sample_rate,
+            scaling,
             orientation: Vec3d::default(),
             buffer: vec![(0.0, background); usize::from(width) * usize::from(height)],
         }
@@ -68,10 +77,10 @@ impl<'a, const SCALING: u8> Viewport<'a, SCALING> {
     fn draw_surface(&mut self, other: Vec3d, repr: &'a str) {
         let (x, y, z) = self.orientation.angle(other).into();
         let ooz = 1.0 / (z + f64::from(self.distance));
-        let xp = (f64::from(SCALING) * ooz * x)
+        let xp = (self.scaling * ooz * x)
             .mul_add(2.0, f64::from(self.width) / 2.0)
             .round();
-        let yp = (f64::from(SCALING) * ooz)
+        let yp = (self.scaling * ooz)
             .mul_add(y, f64::from(self.height) / 2.0)
             .round();
         let idx = yp.mul_add(f64::from(self.width), xp).round() as usize;
@@ -88,7 +97,7 @@ impl<'a, const SCALING: u8> Viewport<'a, SCALING> {
     }
 }
 
-impl<const SCALING: u8> Display for Viewport<'_, SCALING> {
+impl Display for Viewport<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         let mut s = String::with_capacity(self.string_size());
 
