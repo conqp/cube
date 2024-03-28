@@ -1,4 +1,5 @@
 use crate::{Cube, FloatRange, Vec3d};
+use itertools::Itertools;
 use std::f64::consts::TAU;
 use std::fmt::{Display, Formatter};
 
@@ -53,24 +54,24 @@ impl<'a> Viewport<'a> {
     }
 
     fn draw_surfaces(&mut self, cube: &Cube<'a>) {
-        for x in FloatRange::new(
+        FloatRange::new(
             -f64::from(cube.size()),
             cube.size().into(),
             self.sample_rate,
-        ) {
-            for y in FloatRange::new(
-                -f64::from(cube.size()),
-                cube.size().into(),
-                self.sample_rate,
-            ) {
-                self.draw_surface(Vec3d::new(x, y, -f64::from(cube.size())), cube.side(0));
-                self.draw_surface(Vec3d::new(f64::from(cube.size()), y, x), cube.side(1));
-                self.draw_surface(Vec3d::new(-f64::from(cube.size()), y, -x), cube.side(2));
-                self.draw_surface(Vec3d::new(-x, y, cube.size().into()), cube.side(3));
-                self.draw_surface(Vec3d::new(x, -f64::from(cube.size()), -y), cube.side(4));
-                self.draw_surface(Vec3d::new(x, cube.size().into(), y), cube.side(5));
-            }
-        }
+        )
+        .cartesian_product(FloatRange::new(
+            -f64::from(cube.size()),
+            cube.size().into(),
+            self.sample_rate,
+        ))
+        .for_each(|(x, y)| {
+            self.draw_surface(Vec3d::new(x, y, -f64::from(cube.size())), cube.side(0));
+            self.draw_surface(Vec3d::new(f64::from(cube.size()), y, x), cube.side(1));
+            self.draw_surface(Vec3d::new(-f64::from(cube.size()), y, -x), cube.side(2));
+            self.draw_surface(Vec3d::new(-x, y, cube.size().into()), cube.side(3));
+            self.draw_surface(Vec3d::new(x, -f64::from(cube.size()), -y), cube.side(4));
+            self.draw_surface(Vec3d::new(x, cube.size().into(), y), cube.side(5));
+        });
     }
 
     #[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]

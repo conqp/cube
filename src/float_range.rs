@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct FloatRange {
     value: f64,
     end: f64,
