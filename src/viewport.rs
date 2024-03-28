@@ -1,5 +1,6 @@
 use crate::{Cube, FloatRange, Vec3d};
 use itertools::Itertools;
+use std::cell::{Ref, RefCell};
 use std::f64::consts::TAU;
 use std::fmt::{Display, Formatter};
 
@@ -13,6 +14,7 @@ pub struct Viewport<'a> {
     scaling: f64,
     orientation: Vec3d,
     buffer: Vec<(f64, &'a str)>,
+    repr: RefCell<String>,
 }
 
 impl<'a> Viewport<'a> {
@@ -34,6 +36,9 @@ impl<'a> Viewport<'a> {
             scaling,
             orientation: Vec3d::default(),
             buffer: vec![(0.0, background); usize::from(width) * usize::from(height)],
+            repr: RefCell::new(String::with_capacity(
+                (usize::from(width) + 1) * usize::from(height),
+            )),
         }
     }
 
@@ -92,24 +97,30 @@ impl<'a> Viewport<'a> {
         }
     }
 
-    fn string_size(&self) -> usize {
-        // Compensate for newline character at the end of each line
-        (usize::from(self.width) + 1) * usize::from(self.height)
+    fn buffer_str(&self) {
+        let mut buffer = self.repr.borrow_mut();
+        buffer.clear();
+        self.buffer
+            .iter()
+            .map(|(_, repr)| repr)
+            .enumerate()
+            .for_each(|(index, repr)| {
+                buffer.push_str(repr);
+
+                if (index + 1) % self.width as usize == 0 {
+                    buffer.push('\n');
+                }
+            });
+    }
+
+    fn as_str(&self) -> Ref<'_, String> {
+        self.buffer_str();
+        self.repr.borrow()
     }
 }
 
 impl Display for Viewport<'_> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let mut s = String::with_capacity(self.string_size());
-
-        for (index, (_, repr)) in self.buffer.iter().enumerate() {
-            s.push_str(repr);
-
-            if (index + 1) % self.width as usize == 0 {
-                s.push('\n');
-            }
-        }
-
-        write!(f, "{s}")
+        write!(f, "{}", self.as_str())
     }
 }
